@@ -21,8 +21,7 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "FreeCAD FEM calculix constraint fixed"
-__author__ = "Bernd Hahnebach"
+__title__ = "FreeCAD FEM ratel constraint clamp"
 __url__ = "https://www.freecad.org"
 
 import FreeCAD
@@ -41,14 +40,14 @@ def write_constraint(f, femobjs_fixed, femobjs_displacement, ratel_writer):
     
     face_numbers= []
     for femobj_fixed in femobjs_fixed:
-        for obj_fixed, sub_elements_fixed in femobj_fixed["Object"].References:
+        for _, sub_elements_fixed in femobj_fixed["Object"].References:
             for sub_element_fixed in sub_elements_fixed:
                 if sub_element_fixed.startswith("Face"):
                     face_number = sub_element_fixed[4:]
                     face_numbers.append(face_number)
 
     for femobj_displ in femobjs_displacement:
-        for obj_displ, sub_elements_displ in femobj_displ["Object"].References:
+        for _, sub_elements_displ in femobj_displ["Object"].References:
             for sub_element_displ in sub_elements_displ:
                 if sub_element_displ.startswith("Face"):
                     face_number = sub_element_displ[4:]
@@ -59,7 +58,7 @@ def write_constraint(f, femobjs_fixed, femobjs_displacement, ratel_writer):
         f.write("   clamp: ")
         
 
-        face_numbers_list = ', '.join(face_numbers)
+        face_numbers_list = ','.join(face_numbers)
         f.write(face_numbers_list)
         f.write("\n")
 
