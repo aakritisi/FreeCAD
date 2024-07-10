@@ -38,6 +38,8 @@ from FreeCAD import Units
 
 
 from . import write_constraint_clamp as con_clamp
+from . import write_constraint_traction as con_traction
+from . import write_constraint_pressure as con_pressure
 from .. import writerbase
 from femtools import constants
 
@@ -80,6 +82,8 @@ class FemInputWriterRatel(writerbase.FemInputWriter):
         inpfile.write("bc:\n")
 
         self.write_constraints_propdata_clamp(inpfile, self.member.cons_fixed, self.member.cons_displacement, con_clamp)
+        self.write_constraints_propdata(inpfile, self.member.cons_force, con_traction)
+        self.write_constraints_propdata(inpfile, self.member.cons_pressure, con_pressure)
        
         inpfile.close()
 
@@ -113,6 +117,21 @@ class FemInputWriterRatel(writerbase.FemInputWriter):
         if analysis_types != "all" and self.analysis_type not in analysis_types:
             return
         con_module.write_constraint(f, femobjs_fixed, femobjs_displacement, self)
+
+    def write_constraints_propdata(
+        self,
+        f,
+        femobjs_con,
+        con_module
+    ):
+        
+        if (not femobjs_con):
+            return
+
+        analysis_types = con_module.get_analysis_types()
+        if analysis_types != "all" and self.analysis_type not in analysis_types:
+            return
+        con_module.write_constraint(f, femobjs_con, self)
 
 
 ##  @}
