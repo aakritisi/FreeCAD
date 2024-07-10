@@ -36,7 +36,6 @@ def get_constraint_title():
 
 def write_constraint(f, femobjs_fixed, femobjs_displacement, ratel_writer):
 
-    # floats read from ccx should use {:.13G}, see comment in writer module
     
     face_numbers= []
     for femobj_fixed in femobjs_fixed:
@@ -46,7 +45,7 @@ def write_constraint(f, femobjs_fixed, femobjs_displacement, ratel_writer):
                     face_number = sub_element_fixed[4:]
                     face_numbers.append(face_number)
                 else:
-                    FreeCAD.Console.PrintError("Ratel doesn't support constraints on Vertices or Edges")
+                    FreeCAD.Console.PrintError("Ratel doesn't support constraints on Vertices or Edges \n")
 
                     
 
@@ -57,14 +56,13 @@ def write_constraint(f, femobjs_fixed, femobjs_displacement, ratel_writer):
                     face_number = sub_element_displ[4:]
                     face_numbers.append(face_number)
                 else:
-                    FreeCAD.Console.PrintError("Ratel doesn't support constraints on Vertices or Edges")
+                    FreeCAD.Console.PrintError("Ratel doesn't support constraints on Vertices or Edges \n")
 
 
     if(len(face_numbers) >0):
     
         f.write("   clamp: ")
         
-
         face_numbers_list = ','.join(face_numbers)
         f.write(face_numbers_list)
         f.write("\n")

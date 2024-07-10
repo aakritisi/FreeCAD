@@ -35,15 +35,6 @@ def get_constraint_title():
 
 
 def write_constraint(f, femobjs_force, ratel_writer):
-    FreeCAD.Console.PrintMessage("Inititate traction constraint")
-    # face_numbers= []
-    # for femobj_force in femobjs_force:
-    #     for _, sub_elements in femobj_force["Object"].References:
-    #         for sub_element in sub_elements:
-    #             if sub_element.startswith("Face"):
-    #                 face_number = sub_element[4:]
-    #                 face_numbers.append(face_number)
-    
     
     
     for femobj_force in femobjs_force:
@@ -58,7 +49,7 @@ def write_constraint(f, femobjs_force, ratel_writer):
                     face_number = int(sub_element[4:])
                     face_numbers.append(face_number)
                 else:
-                    FreeCAD.Console.PrintError("Ratel doesn't support constraints on Vertices or Edges")
+                    FreeCAD.Console.PrintError("Ratel doesn't support constraints on Vertices or Edges \n")
 
         if(len(face_numbers) > 0):
             f.write("   traction: ")
