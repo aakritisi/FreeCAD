@@ -40,7 +40,6 @@ def write_constraint(f, femobjs_force, ratel_writer):
     for femobj_force in femobjs_force:
         force_obj = femobj_force["Object"]
         direction_vec = force_obj.DirectionVector
-        dir_zero_tol = 1e-15
         load = force_obj.Force
         face_numbers = []
         for _, sub_elements in force_obj.References:
@@ -58,13 +57,13 @@ def write_constraint(f, femobjs_force, ratel_writer):
             f.write("\n")
             for face_number in face_numbers:
                 f.write("   traction_" + face_number + ": ")
-                if abs(direction_vec.x) > dir_zero_tol:
                     tx = direction_vec.x * load
                     f.write(str(tx) + ",")
-                if abs(direction_vec.y) > dir_zero_tol:
+                
                     ty = direction_vec.y * load
                     f.write(str(ty) + ",")
-                if abs(direction_vec.z) > dir_zero_tol:
+                
                     tz = direction_vec.z * load
                     f.write(str(tz))
+                
                     f.write("\n")
