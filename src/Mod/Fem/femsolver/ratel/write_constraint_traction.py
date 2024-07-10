@@ -1,0 +1,79 @@
+# ***************************************************************************
+# *   Copyright (c) 2021 Bernd Hahnebach <bernd@bimstatik.org>              *
+# *                                                                         *
+# *   This file is part of the FreeCAD CAx development system.              *
+# *                                                                         *
+# *   This program is free software; you can redistribute it and/or modify  *
+# *   it under the terms of the GNU Lesser General Public License (LGPL)    *
+# *   as published by the Free Software Foundation; either version 2 of     *
+# *   the License, or (at your option) any later version.                   *
+# *   for detail see the LICENCE text file.                                 *
+# *                                                                         *
+# *   This program is distributed in the hope that it will be useful,       *
+# *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+# *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+# *   GNU Library General Public License for more details.                  *
+# *                                                                         *
+# *   You should have received a copy of the GNU Library General Public     *
+# *   License along with this program; if not, write to the Free Software   *
+# *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
+# *   USA                                                                   *
+# *                                                                         *
+# ***************************************************************************
+
+__title__ = "FreeCAD FEM ratel constraint traction"
+__url__ = "https://www.freecad.org"
+
+import FreeCAD
+
+def get_analysis_types():
+    return "all"    # write for all analysis types
+
+
+def get_constraint_title():
+    return "Traction Constraints"
+
+
+def write_constraint(f, femobjs_force, ratel_writer):
+    FreeCAD.Console.PrintMessage("Inititate traction constraint")
+    # face_numbers= []
+    # for femobj_force in femobjs_force:
+    #     for _, sub_elements in femobj_force["Object"].References:
+    #         for sub_element in sub_elements:
+    #             if sub_element.startswith("Face"):
+    #                 face_number = sub_element[4:]
+    #                 face_numbers.append(face_number)
+    
+    
+    
+    for femobj_force in femobjs_force:
+        force_obj = femobj_force["Object"]
+        direction_vec = force_obj.DirectionVector
+        dir_zero_tol = 1e-15
+        load = force_obj.Force
+        face_numbers = []
+        for _, sub_elements in force_obj.References:
+            for sub_element in sub_elements:
+                if sub_element.startswith("Face"):
+                    face_number = int(sub_element[4:])
+                    face_numbers.append(face_number)
+                else:
+                    FreeCAD.Console.PrintError("Ratel doesn't support constraints on Vertices or Edges")
+
+        if(len(face_numbers) > 0):
+            f.write("   traction: ")
+            face_numbers_list = ','.join(face_numbers)
+            f.write(face_numbers_list)
+            f.write("\n")
+            for face_number in face_numbers:
+                f.write("   traction_" + face_number + ": ")
+                if abs(direction_vec.x) > dir_zero_tol:
+                    tx = direction_vec.x * load
+                    f.write(str(tx) + ",")
+                if abs(direction_vec.y) > dir_zero_tol:
+                    ty = direction_vec.y * load
+                    f.write(str(ty) + ",")
+                if abs(direction_vec.z) > dir_zero_tol:
+                    tz = direction_vec.z * load
+                    f.write(str(tz))
+                    f.write("\n")
