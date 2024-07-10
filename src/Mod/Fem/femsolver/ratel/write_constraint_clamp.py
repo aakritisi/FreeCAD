@@ -45,6 +45,10 @@ def write_constraint(f, femobjs_fixed, femobjs_displacement, ratel_writer):
                 if sub_element_fixed.startswith("Face"):
                     face_number = sub_element_fixed[4:]
                     face_numbers.append(face_number)
+                else:
+                    FreeCAD.Console.PrintError("Ratel doesn't support constraints on Vertices or Edges")
+
+                    
 
     for femobj_displ in femobjs_displacement:
         for _, sub_elements_displ in femobj_displ["Object"].References:
@@ -52,6 +56,9 @@ def write_constraint(f, femobjs_fixed, femobjs_displacement, ratel_writer):
                 if sub_element_displ.startswith("Face"):
                     face_number = sub_element_displ[4:]
                     face_numbers.append(face_number)
+                else:
+                    FreeCAD.Console.PrintError("Ratel doesn't support constraints on Vertices or Edges")
+
 
     if(len(face_numbers) >0):
     
