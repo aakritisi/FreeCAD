@@ -34,16 +34,17 @@ def get_constraint_title():
     return "Traction Constraints"
 
 
-def write_constraint(f, femobjs_force, ratel_writer):
-    
+def write_constraint(f, femobjs_force, ratel_writer):        
     
     for femobj_force in femobjs_force:
         force_obj = femobj_force["Object"]
         direction_vec = force_obj.DirectionVector
         load = FreeCAD.Units.Quantity(force_obj.Force.getValueAs("N"))
         face_numbers = []
-        for _, sub_elements in force_obj.References:
+
+        for ele, sub_elements in force_obj.References:
             for sub_element in sub_elements:
+                
                 if sub_element.startswith("Face"):
                     face_number = sub_element[4:]
                     face_numbers.append(face_number)
@@ -56,14 +57,16 @@ def write_constraint(f, femobjs_force, ratel_writer):
             f.write(face_numbers_list)
             f.write("\n")
             for face_number in face_numbers:
+                face = ele.Shape.getElement("Face"+face_number)
+                area = face.Area
                 f.write("   traction_" + face_number + ": ")
-                tx = direction_vec.x * load
+                tx = direction_vec.x * load/area
                 f.write(str(tx) + ",")
                 
-                ty = direction_vec.y * load
+                ty = direction_vec.y * load/area
                 f.write(str(ty) + ",")
                 
-                tz = direction_vec.z * load
+                tz = direction_vec.z * load/area
                 f.write(str(tz))
                 
                 f.write("\n")
