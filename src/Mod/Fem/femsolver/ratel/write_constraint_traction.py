@@ -39,6 +39,7 @@ def write_constraint(f, femobjs_force, ratel_writer):
     for femobj_force in femobjs_force:
         force_obj = femobj_force["Object"]
         direction_vec = force_obj.DirectionVector
+        
         load = FreeCAD.Units.Quantity(force_obj.Force.getValueAs("N"))
         face_numbers = []
 
@@ -58,7 +59,9 @@ def write_constraint(f, femobjs_force, ratel_writer):
             f.write("\n")
             for face_number in face_numbers:
                 face = ele.Shape.getElement("Face"+face_number)
-                area = face.Area
+            # convert area from mm^2 to m^2
+                area = round(face.Area) / 1e6
+                
                 f.write("   traction_" + face_number + ": ")
                 tx = direction_vec.x * load/area
                 f.write(str(tx) + ",")

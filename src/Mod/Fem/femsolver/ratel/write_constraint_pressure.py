@@ -39,7 +39,7 @@ def write_constraint(f, femobjs_pressure, ratel_writer):
     
     for femobj_press in femobjs_pressure:
         pressure_obj = femobj_press["Object"]
-        pressure_quantity = FreeCAD.Units.Quantity(pressure_obj.Pressure.getValueAs("MPa"))
+        pressure_quantity = FreeCAD.Units.Quantity(pressure_obj.Pressure.getValueAs("Pa"))
         face_numbers = []
         for _, sub_elements in pressure_obj.References:
             for sub_element in sub_elements:

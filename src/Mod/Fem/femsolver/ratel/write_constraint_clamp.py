@@ -78,11 +78,11 @@ def write_constraint(f, femobjs_fixed, femobjs_displacement, ratel_writer):
                         face_numbers.append(face_number)
             for face_number in face_numbers:
                 f.write("   clamp_" + str(face_number) + "_translate: ")
-                f.write(str(FreeCAD.Units.Quantity(displ_obj.xDisplacement.getValueAs("mm"))))
+                f.write(str(FreeCAD.Units.Quantity(displ_obj.xDisplacement.getValueAs("m"))))
                 f.write(",")
-                f.write(str(FreeCAD.Units.Quantity(displ_obj.yDisplacement.getValueAs("mm"))))
+                f.write(str(FreeCAD.Units.Quantity(displ_obj.yDisplacement.getValueAs("m"))))
                 f.write(",")
-                f.write(str(FreeCAD.Units.Quantity(displ_obj.zDisplacement.getValueAs("mm"))))
+                f.write(str(FreeCAD.Units.Quantity(displ_obj.zDisplacement.getValueAs("m"))))
                 f.write("\n")
                 # if ratel_writer.member.geos_beamsection or ratel_writer.member.geos_shellthickness:
                 if displ_obj.xRotation != 0 or displ_obj.yRotation != 0 or displ_obj.zRotation != 0:
