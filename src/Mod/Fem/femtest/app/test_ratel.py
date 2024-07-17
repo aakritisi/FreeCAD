@@ -23,7 +23,6 @@
 # ***************************************************************************
 
 __title__ = "Ratel FEM unit tests"
-__author__ = "Bernd Hahnebach"
 __url__ = "https://www.freecad.org"
 
 import unittest
@@ -35,7 +34,6 @@ import femsolver.run
 from . import support_utils as testtools
 from .support_utils import fcc_print
 from .support_utils import get_namefromdef
-from femtools import ccxtools
 
 
 class TestRatel(unittest.TestCase):
@@ -81,7 +79,6 @@ class TestRatel(unittest.TestCase):
 
         setup(self.document, "ratel")
         base_name = get_namefromdef("test_")
-        # res_obj_name = "CCX_Results"
         analysis_dir = testtools.get_fem_test_tmp_dir(self.pre_dir_name + base_name)
 
         # test input file writing
@@ -90,14 +87,6 @@ class TestRatel(unittest.TestCase):
             analysis_dir=analysis_dir,
             test_end=True,
         )
-
-        # # test result reading
-        # self.result_reading_test(
-        #     base_name,
-        #     analysis_dir=analysis_dir,
-        #     fea=fea,
-        #     res_obj_name=res_obj_name,
-        # )
 
     def input_file_writing_test(
         self,
@@ -123,20 +112,6 @@ class TestRatel(unittest.TestCase):
         error = machine_ratel.start()
         machine_ratel.join()
 
-        # fcc_print("Setting up working directory {}".format(analysis_dir))
-        # fea.setup_working_dir(analysis_dir)
-        # self.assertTrue(
-        #     True if fea.working_dir == analysis_dir else False,
-        #     "Setting working directory {} failed".format(analysis_dir),
-        # )
-
-        # fcc_print("Checking FEM inp file prerequisites for {} ...".format(base_name))
-        # error = fea.check_prerequisites()
-        # self.assertFalse(
-        #     error,
-        #     "ccxtools check_prerequisites returned error message: {}".format(error),
-        # )
-
         inpfile_given = join(self.test_file_dir, (base_name + ".yml"))
         inpfile_totest = join(analysis_dir, (self.mesh_name + ".yml"))
         fcc_print("Checking FEM inp file write...")
@@ -146,196 +121,3 @@ class TestRatel(unittest.TestCase):
         fcc_print("Comparing {} to {}".format(inpfile_given, inpfile_totest))
         ret = testtools.compare_inp_files(inpfile_given, inpfile_totest)
         self.assertFalse(ret, "ratel writing input test failed.\n{}".format(ret))
-
-        # if test_end is True:
-        #     # do not save and print End of tests
-        #     return fea
-
-        # save_fc_file = join(analysis_dir, base_name + ".FCStd")
-        # fcc_print("Save FreeCAD file for {} to {}...".format(base_name, save_fc_file))
-        # self.document.saveAs(save_fc_file)
-
-        # fcc_print(
-        #     "\n--------------- " "End of FEM ccxtools {}" "---------------".format(
-        #         base_name
-        #     )
-        # )
-
-    # # ********************************************************************************************
-    # def result_reading_test(
-    #     self,
-    #     base_name,
-    #     analysis_dir,
-    #     fea,
-    #     res_obj_name,
-    # ):
-    #     inpfile_given = join(self.test_file_dir, (base_name + ".inp"))
-
-    #     fcc_print(
-    #         "Setting up working directory to {} in order to read simulated calculations".format(
-    #             self.test_file_dir
-    #         )
-    #     )
-    #     fea.setup_working_dir(self.test_file_dir)
-    #     self.assertTrue(
-    #         True if fea.working_dir == self.test_file_dir else False,
-    #         "Setting working directory {} failed".format(self.test_file_dir),
-    #     )
-
-    #     fcc_print("Setting base name to read test {}.frd file...".format(base_name))
-    #     fea.set_base_name(base_name)
-    #     self.assertTrue(
-    #         True if fea.base_name == base_name else False,
-    #         "Setting base name to {} failed".format(base_name),
-    #     )
-
-    #     fcc_print("Setting inp file name to read test {}.frd file...".format(base_name))
-    #     fea.set_inp_file_name()
-    #     self.assertTrue(
-    #         True if fea.inp_file_name == inpfile_given else False,
-    #         "Setting inp file name to {} failed".format(inpfile_given),
-    #     )
-
-    #     fcc_print("Checking FEM frd file read from {}...".format(base_name))
-    #     fea.load_results()
-    #     self.assertTrue(
-    #         fea.results_present,
-    #         "Cannot read results from {}.frd frd file".format(fea.base_name),
-    #     )
-
-    #     fcc_print("Reading stats from result object for {}...".format(base_name))
-    #     expected_values = join(self.test_file_dir, base_name + "_expected_values")
-    #     ret = testtools.compare_stats(fea, expected_values, res_obj_name)
-    #     self.assertFalse(ret, "Invalid results read from .frd file")
-
-    #     save_fc_file = join(analysis_dir, base_name + ".FCStd")
-    #     fcc_print("Save FreeCAD file for {} to {}...".format(base_name, save_fc_file))
-    #     self.document.saveAs(save_fc_file)
-
-    #     fcc_print("--------------- End of {} -------------------".format(base_name))
-
-
-# ************************************************************************************************
-def create_test_results():
-    import os
-    import shutil
-    import unittest
-
-    import FemGui
-    from femresult import resulttools
-    from femtools import ccxtools
-
-    temp_dir = testtools.get_fem_test_tmp_dir()
-    test_class = "femtest.app.test_ccxtools.TestCcxTools"  # unit test class
-    stat_types = [
-        "U1",
-        "U2",
-        "U3",
-        "Uabs",
-        "Sabs",
-        "MaxPrin",
-        "MidPrin",
-        "MinPrin",
-        "MaxShear",
-        "Peeq",
-        "Temp",
-        "MFlow",
-        "NPress",
-    ]
-
-    # ****************************************************************************
-    # static cube
-    print("create static result files")
-    unittest.TextTestRunner().run(
-        unittest.TestLoader().loadTestsFromName(test_class + ".test_static_analysis")
-    )
-    static_analysis_dir = join(temp_dir, "FEM_ccx_static")
-    doc_static_cube = FreeCAD.open(join(static_analysis_dir, "cube_static.FCStd"))
-    FemGui.setActiveAnalysis(doc_static_cube.Analysis)
-    fea = ccxtools.FemToolsCcx()
-    fea.update_objects()
-
-    fea.reset_all()
-    fea.run()
-    fea.load_results()
-    stats_static = []
-    res_obj_static = doc_static_cube.getObject("CCX_Results")
-    for s in stat_types:
-        statval = resulttools.get_stats(res_obj_static, s)
-        stats_static.append(
-            "{0}: ({1:.14g}, {2:.14g}, )\n".format(s, statval[0], statval[1])
-        )
-    static_expected_values_file = join(
-        static_analysis_dir, "cube_static_expected_values"
-    )
-    f = open(static_expected_values_file, "w")
-    for s in stats_static:
-        f.write(s)
-    f.close()
-    frd_result_file = os.path.splitext(fea.inp_file_name)[0] + ".frd"
-    dat_result_file = os.path.splitext(fea.inp_file_name)[0] + ".dat"
-    frd_static_test_result_file = join(static_analysis_dir, "cube_static.frd")
-    dat_static_test_result_file = join(static_analysis_dir, "cube_static.dat")
-    shutil.copyfile(frd_result_file, frd_static_test_result_file)
-    shutil.copyfile(dat_result_file, dat_static_test_result_file)
-    print("Results copied to the appropriate FEM test dirs in: " + temp_dir)
-
-    # ****************************************************************************
-    # frequency cube
-    print("create frequency result files")
-    unittest.TextTestRunner().run(
-        unittest.TestLoader().loadTestsFromName(test_class + ".test_freq_analysis")
-    )
-    frequency_analysis_dir = join(temp_dir, "FEM_ccx_frequency")
-    doc_frequency_cube = FreeCAD.open(
-        join(frequency_analysis_dir, "cube_frequency.FCStd")
-    )
-    FemGui.setActiveAnalysis(doc_frequency_cube.Analysis)
-    fea = ccxtools.FemToolsCcx()
-    fea.update_objects()
-    fea.reset_all()
-    # we should only have one result object 1 to 6 will be less than 0.01 and ignored
-    fea.solver.EigenmodesCount = 7
-    doc_frequency_cube.recompute()
-    fea.run()
-    fea.load_results()
-    stats_frequency = []
-    res_obj_freq = doc_frequency_cube.getObject("CCX_Mode7_Results")
-    for s in stat_types:
-        statval = resulttools.get_stats(res_obj_freq, s)
-        stats_frequency.append(
-            "{0}: ({1:.14g}, {2:.14g})\n".format(s, statval[0], statval[1])
-        )
-    frequency_expected_values_file = join(
-        frequency_analysis_dir, "cube_frequency_expected_values"
-    )
-    f = open(frequency_expected_values_file, "w")
-    for s in stats_frequency:
-        f.write(s)
-    f.close()
-    frd_result_file = os.path.splitext(fea.inp_file_name)[0] + ".frd"
-    dat_result_file = os.path.splitext(fea.inp_file_name)[0] + ".dat"
-    frd_frequency_test_result_file = join(frequency_analysis_dir, "cube_frequency.frd")
-    dat_frequency_test_result_file = join(frequency_analysis_dir, "cube_frequency.dat")
-    shutil.copyfile(frd_result_file, frd_frequency_test_result_file)
-    shutil.copyfile(dat_result_file, dat_frequency_test_result_file)
-    print("Results copied to the appropriate FEM test dirs in: " + temp_dir)
-
-
-"""
-update the results of FEM ccxtools unit tests:
-
-from femtest.app.test_ccxtools import create_test_results
-create_test_results()
-
-copy result files
-from unit_test_temp_directory/FEM_unittests/specific_test into the src directory
-compare the results with git difftool
-run make
-start FreeCAD and run FEM unit test
-if FEM unit test is fine --> commit new FEM unit test results
-
-TODO compare the inp file of the helper with the inp file of FEM unit tests
-TODO the better way: move the result creation inside the TestFem
-and add some preference to deactivate this because it needs ccx
-"""

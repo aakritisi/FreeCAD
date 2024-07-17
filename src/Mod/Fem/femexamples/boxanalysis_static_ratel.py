@@ -120,10 +120,6 @@ def setup(doc=None, solvertype="ratel"):
     con_disp.yDisplacement = 2.0
     con_disp.zFix = False
     con_disp.zDisplacement = 0.0
-    con_disp.xRotation = 1
-    con_disp.yRotation = 0
-    con_disp.zRotation = 0
-
 
     analysis.addObject(con_disp)
 

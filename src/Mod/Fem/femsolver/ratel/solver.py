@@ -24,7 +24,7 @@
 __title__ = "FreeCAD FEM solver object Ratel"
 __url__ = "https://www.freecad.org"
 
-## @package SolverCalculix
+## @package SolverRatel
 #  \ingroup FEM
 
 import glob

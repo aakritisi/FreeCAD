@@ -22,8 +22,7 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "FreeCAD FEM solver CalculiX tasks"
-__author__ = "Markus Hovorka, Bernd Hahnebach"
+__title__ = "FreeCAD FEM solver Ratel tasks"
 __url__ = "https://www.freecad.org"
 
 ## \addtogroup FEM
@@ -38,8 +37,6 @@ import FreeCAD
 from . import writer
 from .. import run
 from .. import settings
-from feminout import importCcxDatResults
-from feminout import importCcxFrdResults
 from femmesh import meshsetsgetter
 from femtools import femutils
 from femtools import membertools

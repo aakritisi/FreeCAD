@@ -84,13 +84,13 @@ def write_constraint(f, femobjs_fixed, femobjs_displacement, ratel_writer):
                 f.write(",")
                 f.write(str(FreeCAD.Units.Quantity(displ_obj.zDisplacement.getValueAs("m"))))
                 f.write("\n")
-                # if ratel_writer.member.geos_beamsection or ratel_writer.member.geos_shellthickness:
-                if displ_obj.xRotation != 0 or displ_obj.yRotation != 0 or displ_obj.zRotation != 0:
-                    f.write("   clamp_" + str(face_number) + "_rotate: ")
-                    f.write(str(FreeCAD.Units.Quantity(displ_obj.xRotation.getValueAs("deg"))))
-                    f.write(",")
-                    f.write(str(FreeCAD.Units.Quantity(displ_obj.yRotation.getValueAs("deg"))))
-                    f.write(",")
-                    f.write(str(FreeCAD.Units.Quantity(displ_obj.zRotation.getValueAs("deg"))))
-                    f.write(",0,0")
-                    f.write("\n")
+                if ratel_writer.member.geos_beamsection or ratel_writer.member.geos_shellthickness:
+                    if displ_obj.xRotation != 0 or displ_obj.yRotation != 0 or displ_obj.zRotation != 0:
+                        f.write("   clamp_" + str(face_number) + "_rotate: ")
+                        f.write(str(FreeCAD.Units.Quantity(displ_obj.xRotation.getValueAs("deg"))))
+                        f.write(",")
+                        f.write(str(FreeCAD.Units.Quantity(displ_obj.yRotation.getValueAs("deg"))))
+                        f.write(",")
+                        f.write(str(FreeCAD.Units.Quantity(displ_obj.zRotation.getValueAs("deg"))))
+                        f.write(",0,0")
+                        f.write("\n")
