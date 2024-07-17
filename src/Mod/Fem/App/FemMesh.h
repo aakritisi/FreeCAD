@@ -221,8 +221,6 @@ private:
     /// positioning matrix
     Base::Matrix4D _Mtrx;
     SMESH_Mesh* myMesh;
-    std::string _FileExt;
-
     std::list<SMESH_HypothesisPtr> hypoth;
     static SMESH_Gen* _mesh_gen;
 };
