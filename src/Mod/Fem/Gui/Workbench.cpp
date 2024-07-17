@@ -183,6 +183,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     if (!Fem::Tools::checkIfBinaryExists("Z88", "z88", "z88r").empty()) {
         *solve << "FEM_SolverZ88";
     }
+    *solve << "FEM_SolverRatel";
     *solve << "Separator"
            << "FEM_CompMechEquations"
            << "FEM_CompEmEquations"
@@ -331,6 +332,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
            << "FEM_SolverElmer"
            << "FEM_SolverMystran"
            << "FEM_SolverZ88"
+           << "FEM_SolverRatel"
            << "Separator"
            << "FEM_CompMechEquations"
            << "FEM_CompEmEquations"

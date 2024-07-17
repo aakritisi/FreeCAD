@@ -1148,6 +1148,37 @@ class _SolverCalculixContextManager:
         expandParentObject()
         FreeCAD.ActiveDocument.recompute()
 
+class _SolverRatelContextManager:
+
+    def __init__(self, make_name, cli_obj_ref_name):
+        self.make_name = make_name
+        self.cli_name = cli_obj_ref_name
+
+    def __enter__(self):
+        FreeCAD.ActiveDocument.openTransaction("Create SolverRatel")
+        FreeCADGui.addModule("ObjectsFem")
+        FreeCADGui.addModule("FemGui")
+        FreeCADGui.doCommand(
+            "{} = ObjectsFem.{}(FreeCAD.ActiveDocument)".format(
+                self.cli_name, self.make_name
+            )
+        )
+        FreeCADGui.doCommand(
+        "{}.AnalysisType = {}".format(
+            self.cli_name, 0
+        )
+        )
+        return self
+
+    def __exit__(self, exc_type, exc_value, trace):
+        FreeCADGui.doCommand(
+            "FemGui.getActiveAnalysis().addObject({})".format(self.cli_name)
+        )
+        FreeCAD.ActiveDocument.commitTransaction()
+        # expand analysis object in tree view
+        expandParentObject()
+        FreeCAD.ActiveDocument.recompute()
+
 
 class _SolverCcxTools(CommandManager):
     "The FEM_SolverCalculix ccx tools command definition"
@@ -1201,6 +1232,38 @@ class _SolverCalculix(CommandManager):
 
     def Activated(self):
         with _SolverCalculixContextManager("makeSolverCalculix", "solver") as cm:
+            has_nonlinear_material_obj = False
+            for m in self.active_analysis.Group:
+                if is_of_type(m, "Fem::MaterialMechanicalNonlinear"):
+                    has_nonlinear_material_obj = True
+
+            if has_nonlinear_material_obj:
+                FreeCADGui.doCommand(
+                    "{}.GeometricalNonlinearity = 'nonlinear'".format(cm.cli_name)
+                )
+                FreeCADGui.doCommand(
+                    "{}.MaterialNonlinearity = 'nonlinear'".format(cm.cli_name)
+                )
+
+class _SolverRatel(CommandManager):
+    "The FEM_SolverRatel command definition"
+
+    def __init__(self):
+        super(_SolverRatel, self).__init__()
+        self.pixmap = "FEM_SolverStandard"
+        self.menutext = Qt.QT_TRANSLATE_NOOP(
+            "FEM_SolverRatel",
+            "Solver Ratel"
+        )
+        self.accel = "S, R"
+        self.tooltip = Qt.QT_TRANSLATE_NOOP(
+            "FEM_SolverRatel",
+            "Creates a FEM solver Ratel"
+        )
+        self.is_active = "with_analysis"
+
+    def Activated(self):
+        with _SolverRatelContextManager("makeSolverRatel", "solver") as cm:
             has_nonlinear_material_obj = False
             for m in self.active_analysis.Group:
                 if is_of_type(m, "Fem::MaterialMechanicalNonlinear"):
@@ -1491,6 +1554,10 @@ FreeCADGui.addCommand(
 FreeCADGui.addCommand(
     "FEM_SolverMystran",
     _SolverMystran()
+)
+FreeCADGui.addCommand(
+    "FEM_SolverRatel",
+    _SolverRatel()
 )
 FreeCADGui.addCommand(
     "FEM_SolverRun",
