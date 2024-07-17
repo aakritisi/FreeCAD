@@ -87,8 +87,8 @@ class _BaseSolverRatel:
                 "Fem",
                 "Format for generating mesh"
             )
-            obj.MeshFormat = MESH_FORMAT
-            obj.MeshFormat = MESH_FORMAT[0]
+        obj.MeshFormat = MESH_FORMAT
+        obj.MeshFormat = MESH_FORMAT[0]
         
 
 
