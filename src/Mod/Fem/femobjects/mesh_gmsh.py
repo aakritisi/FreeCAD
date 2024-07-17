@@ -343,3 +343,12 @@ class MeshGmsh(base_fempythonobject.BaseFemPythonObject):
             obj.setPropertyStatus("SubdivisionAlgorithm", "LockDynamic")
             obj.SubdivisionAlgorithm = MeshGmsh.known_mesh_SubdivisionAlgorithms
             obj.SubdivisionAlgorithm = "None"
+
+        if not hasattr(obj, "FilePath"):
+            obj.addProperty(
+                "App::PropertyString",
+                "FilePath",
+                "FEM Gmsh Mesh Params",
+                "Generated mesh file path"
+            )
+            obj.FilePath = ""
