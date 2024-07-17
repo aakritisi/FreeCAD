@@ -142,7 +142,6 @@ FemMesh& FemMesh::operator=(const FemMesh& mesh)
 void FemMesh::copyMeshData(const FemMesh& mesh)
 {
     _Mtrx = mesh._Mtrx;
-    _FileExt = mesh._FileExt;
 
     // See file SMESH_I/SMESH_Gen_i.cxx in the git repo of smesh at
     // https://git.salome-platform.org
@@ -1887,7 +1886,6 @@ void FemMesh::readMsh(const std::string& FileName)
 
 
     Base::FileInfo File(FileName);
-    _FileExt = File.extension();
 
     PyObject* module = PyImport_ImportModule("feminout.importMshMesh");
     if (!module) {
@@ -1971,7 +1969,6 @@ void FemMesh::read(const char* FileName)
         throw Base::FileException("Unknown extension");
     }
 
-    _FileExt = File.extension();
 }
 
 void FemMesh::writeABAQUS(const std::string& Filename,
@@ -2607,20 +2604,11 @@ unsigned int FemMesh::getMemSize() const
 
 void FemMesh::Save(Base::Writer& writer) const
 {
-    std::string filename;
-
-    if (_FileExt.empty()) {
-        filename = "FemMesh.unv";
-    }
-    else {
-        filename = "FemMesh." + _FileExt;
-    }
-
 
     if (!writer.isForceXML()) {
         // See SaveDocFile(), RestoreDocFile()
         writer.Stream() << writer.ind() << "<FemMesh file=\"";
-        writer.Stream() << writer.addFile(filename.c_str(), this) << "\"";
+        writer.Stream() << writer.addFile("FemMesh.unv", this) << "\"";
         writer.Stream() << " a11=\"" << _Mtrx[0][0] << "\" a12=\"" << _Mtrx[0][1] << "\" a13=\""
                         << _Mtrx[0][2] << "\" a14=\"" << _Mtrx[0][3] << "\"";
         writer.Stream() << " a21=\"" << _Mtrx[1][0] << "\" a22=\"" << _Mtrx[1][1] << "\" a23=\""
