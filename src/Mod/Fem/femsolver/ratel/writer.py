@@ -79,6 +79,10 @@ class FemInputWriterRatel(writerbase.FemInputWriter):
         
         inpfile = codecs.open(self.file_name, "w", encoding="utf-8")
 
+        inpfile.write("dm_plex_filename: ")
+        inpfile.write(self.mesh_object.FilePath)
+        inpfile.write("\n\n")
+
         inpfile.write("bc:\n")
 
         self.write_constraints_propdata_clamp(inpfile, self.member.cons_fixed, self.member.cons_displacement, con_clamp)
