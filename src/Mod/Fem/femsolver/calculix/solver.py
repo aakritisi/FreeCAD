@@ -67,22 +67,21 @@ class _BaseSolverCalculix:
         self.add_attributes(obj)
 
 
-def add_attributes(obj, ccx_prefs):
-
-    if not hasattr(obj, "MeshFormat"):
+    def add_attributes(self, obj):
+        if not hasattr(obj, "MeshFormat"):
             obj.addProperty("App::PropertyEnumeration", "MeshFormat", "Fem", "Mesh format for Gmsh output")
             obj.MeshFormat = MESH_TYPES
             obj.MeshFormat = ".unv"
-
-    if not hasattr(obj, "AnalysisType"):
-        obj.addProperty(
-            "App::PropertyEnumeration",
-            "AnalysisType",
-            "Fem",
-            "Type of the analysis"
-        )
-        obj.AnalysisType = ANALYSIS_TYPES
-        obj.AnalysisType = ANALYSIS_TYPES[0]
+            
+        if not hasattr(obj, "AnalysisType"):
+            obj.addProperty(
+                "App::PropertyEnumeration",
+                "AnalysisType",
+                "Fem",
+                "Type of the analysis"
+            )
+            obj.AnalysisType = ANALYSIS_TYPES
+            obj.AnalysisType = ANALYSIS_TYPES[0]
 
         if not hasattr(obj, "GeometricalNonlinearity"):
             choices_geom_nonlinear = ["linear", "nonlinear"]
