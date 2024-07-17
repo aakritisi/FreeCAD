@@ -351,6 +351,10 @@ class TestObjectType(unittest.TestCase):
             type_of_obj(ObjectsFem.makeSolverZ88(doc))
         )
         self.assertEqual(
+            "Fem::SolverRatel",
+            type_of_obj(ObjectsFem.makeSolverRatel(doc))
+        )
+        self.assertEqual(
             "Fem::EquationElmerDeformation",
             type_of_obj(ObjectsFem.makeEquationDeformation(doc, solverelmer))
         )
@@ -596,6 +600,10 @@ class TestObjectType(unittest.TestCase):
         self.assertTrue(is_of_type(
             ObjectsFem.makeSolverMystran(doc),
             "Fem::SolverMystran"
+        ))
+        self.assertTrue(is_of_type(
+            ObjectsFem.makeSolverRatel(doc),
+            "Fem::SolverRatel"
         ))
         self.assertTrue(is_of_type(
             ObjectsFem.makeSolverZ88(doc),
@@ -1402,6 +1410,25 @@ class TestObjectType(unittest.TestCase):
             "Fem::SolverZ88"
         ))
 
+        # SolverRatel
+        solver_ratel = ObjectsFem.makeSolverRatel(doc)
+        self.assertTrue(is_derived_from(
+            solver_ratel,
+            "App::DocumentObject"
+        ))
+        self.assertTrue(is_derived_from(
+            solver_ratel,
+            "Fem::FemSolverObject"
+        ))
+        self.assertTrue(is_derived_from(
+            solver_ratel,
+            "Fem::FemSolverObjectPython"
+        ))
+        self.assertTrue(is_derived_from(
+            solver_ratel,
+            "Fem::SolverRatel"
+        ))
+
         # EquationElmerDeformation
         equation_deformation = ObjectsFem.makeEquationDeformation(doc, solver_elmer)
         self.assertTrue(is_derived_from(
@@ -1795,6 +1822,11 @@ class TestObjectType(unittest.TestCase):
             ).isDerivedFrom("Fem::FemSolverObjectPython")
         )
         self.assertTrue(
+            ObjectsFem.makeSolverRatel(
+                doc
+            ).isDerivedFrom("Fem::FemSolverObjectPython")
+        )
+        self.assertTrue(
             ObjectsFem.makeEquationDeformation(
                 doc,
                 solverelmer
@@ -1924,6 +1956,7 @@ def create_all_fem_objects_doc(
     sol = analysis.addObject(ObjectsFem.makeSolverElmer(doc))[0]
     analysis.addObject(ObjectsFem.makeSolverMystran(doc))
     analysis.addObject(ObjectsFem.makeSolverZ88(doc))
+    analysis.addObject(ObjectsFem.makeSolverRatel(doc))
 
     ObjectsFem.makeEquationDeformation(doc, sol)
     ObjectsFem.makeEquationElasticity(doc, sol)
