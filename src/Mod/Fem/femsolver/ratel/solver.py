@@ -44,6 +44,7 @@ if FreeCAD.GuiUp:
     import FemGui
 
 ANALYSIS_TYPES = ["static", "frequency", "thermomech", "check", "buckling"]
+MESH_FORMAT = [".msh"]
 
 
 def create(doc, name="SolverRatel"):
@@ -79,6 +80,15 @@ class _BaseSolverRatel:
             obj.AnalysisType = ANALYSIS_TYPES
             obj.AnalysisType = ANALYSIS_TYPES[0]
 
+        if not hasattr(obj, "MeshFormat"):
+            obj.addProperty(
+                "App::PropertyEnumeration",
+                "MeshFormat",
+                "Fem",
+                "Format for generating mesh"
+            )
+            obj.MeshFormat = MESH_FORMAT
+            obj.MeshFormat = MESH_FORMAT[0]
         
 
 
@@ -110,7 +120,7 @@ class Proxy(solverbase.Proxy, _BaseSolverRatel):
         return True
 
     def edit(self, directory):
-        pattern = os.path.join(directory, "*.inp")
+        pattern = os.path.join(directory, "*.yml")
         FreeCAD.Console.PrintMessage("{}\n".format(pattern))
         f = glob.glob(pattern)[0]
         FemGui.open(f)
