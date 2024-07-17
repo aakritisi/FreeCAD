@@ -145,11 +145,6 @@
             <string>.inp</string>
            </property>
            </item>
-           <item>
-           <property name="text">
-            <string>.msh</string>
-           </property>
-           </item>
          </widget>
         </item>
        </layout>
