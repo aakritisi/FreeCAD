@@ -1879,6 +1879,43 @@ void FemMesh::readZ88(const std::string& FileName)
                         Base::TimeElapsed::diffTimeF(Start, Base::TimeElapsed()));
 }
 
+void FemMesh::readMsh(const std::string& FileName)
+{
+    Base::TimeElapsed Start;
+    Base::Console().Log("Start: FemMesh::readMsh() =================================\n");
+
+
+    Base::FileInfo File(FileName);
+
+    PyObject* module = PyImport_ImportModule("feminout.importMshMesh");
+    if (!module) {
+        return;
+    }
+    try {
+        Py::Module mshmod(module, true);
+        Py::Callable method(mshmod.getAttr("read"));
+        Py::Tuple args(1);
+        args.setItem(0, Py::String(FileName));
+        Py::Object mesh(method.apply(args));
+        if (PyObject_TypeCheck(mesh.ptr(), &FemMeshPy::Type)) {
+            FemMeshPy* fempy = static_cast<FemMeshPy*>(mesh.ptr());
+            FemMesh* fem = fempy->getFemMeshPtr();
+            *this = *fem;  // the deep copy should be avoided, a pointer swap method could be
+                           // implemented see
+                           // https://forum.freecad.org/viewtopic.php?f=10&t=31999&start=10#p274241
+        }
+        else {
+            throw Base::FileException("Problems reading file");
+        }
+    }
+    catch (Py::Exception& e) {
+        e.clear();
+    }
+    Base::Console().Log("    %f: Done \n",
+                        Base::TimeElapsed::diffTimeF(Start, Base::TimeElapsed()));
+}
+
+
 void FemMesh::read(const char* FileName)
 {
     Base::FileInfo File(FileName);
@@ -1924,9 +1961,14 @@ void FemMesh::read(const char* FileName)
         // read Z88 mesh file
         readZ88(File.filePath());
     }
+    else if (File.hasExtension("msh")) {
+        // read .msh mesh file
+        readMsh(File.filePath());
+    }
     else {
         throw Base::FileException("Unknown extension");
     }
+
 }
 
 void FemMesh::writeABAQUS(const std::string& Filename,
@@ -2586,6 +2628,7 @@ unsigned int FemMesh::getMemSize() const
 
 void FemMesh::Save(Base::Writer& writer) const
 {
+
     if (!writer.isForceXML()) {
         // See SaveDocFile(), RestoreDocFile()
         writer.Stream() << writer.ind() << "<FemMesh file=\"";
