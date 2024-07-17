@@ -41,6 +41,7 @@ from . import write_constraint_clamp as con_clamp
 from . import write_constraint_traction as con_traction
 from . import write_constraint_pressure as con_pressure
 from .. import writerbase
+from . import solver
 from femtools import constants
 
 class FemInputWriterRatel(writerbase.FemInputWriter):
@@ -78,6 +79,17 @@ class FemInputWriterRatel(writerbase.FemInputWriter):
         )
         
         inpfile = codecs.open(self.file_name, "w", encoding="utf-8")
+
+        if self.mesh_object.FilePath == "":
+            FreeCAD.Console.PrintError(
+                "No mesh file found"
+            )
+        elif ("."+self.mesh_object.FilePath.split(".")[1]) not in solver.MESH_FORMAT:
+            FreeCAD.Console.PrintError(
+                "Mesh file format not supported by Ratel: " + self.mesh_object.FilePath.split(".")[1]
+            )
+            return ""
+
 
         inpfile.write("dm_plex_filename: ")
         inpfile.write(self.mesh_object.FilePath)
