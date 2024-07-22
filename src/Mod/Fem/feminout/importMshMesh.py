@@ -67,15 +67,12 @@ def read_msh(file_name):
         seg2 = {}
         seg3 = {}
     nodes = {}
-    contigous_numbered = False
 
     f = pyopen(file_name, "r")
     line = "\n"
     total_num_nodes = 0
-    node_ind = 1
     node_tag_array = []
     tag_ind = 0
-    node_coord = False
     num_element = 0
     number_of_nodes = 0
     read_elements = False
@@ -84,6 +81,7 @@ def read_msh(file_name):
     point_elem = False
     number_of_nodes = 0
     error_seg3 = False
+    node_tag_ind = 0
     error_not_supported_elemtype = False
     while line != "":
         line = f.readline()
@@ -98,40 +96,28 @@ def read_msh(file_name):
             line = f.readline()
             line_list = line.split(" ")
             total_num_nodes = int(line_list[1])
-            node_ind = int(line_list[2])
-            if(int(line_list[3])- int(line_list[2]) + 1 == total_num_nodes):
-                contigous_numbered = True
         elif (read_node is True) and (len(nodes) < total_num_nodes):
             line_list = line.split(" ")
-            if contigous_numbered is True:
-                if(len(line_list) == 3):
-                    x = float(line_list[0])
-                    y = float(line_list[1])
-                    z = float(line_list[2])
-                    nodes[node_ind] = [x, y, z]
-                    node_ind += 1
-                    
+            if(len(line_list) == 4):
+                node_tag_array = [0]*int(line_list[3])
+                node_tag_ind = 0
+                tag_ind = 0
+            elif(len(line_list) == 1):
+                node_tag_array[tag_ind] = int(line_list[0])
+                tag_ind += 1
+                
             else:
-                if(len(line_list) == 4):
-                    node_tag_array = [0]*int(line_list[3])
-                    tag_ind = 0
-                elif(len(line_list) == 1):
-                    node_tag_array[tag_ind] = int(line_list[0])
-                    tag_ind += 1
-                    
-                else:
-                    if(node_coord is False):
-                        node_coord = True
-                        node_ind = 0
-                    x = float(line_list[0])
-                    y = float(line_list[1])
-                    z = float(line_list[2])
-                    nodes[node_tag_array[node_ind]] = [x, y, z]
-                    nod_ind += 1
+                x = float(line_list[0])
+                y = float(line_list[1])
+                z = float(line_list[2])
+                nodes[node_tag_array[node_tag_ind]] = [x, y, z]
+                node_tag_ind += 1
+        
 
 
         # reading elements
         elif line[:9].upper() == "$ELEMENTS":
+            read_node = False
             read_elements = True
             line = f.readline()
             continue;
@@ -210,27 +196,36 @@ def read_msh(file_name):
 
 
     # switch from the .msh node numbering to the FreeCAD node numbering
+    for en in elements.tetra4:
+        n = elements.tetra4[en]
+        elements.tetra4[en] = [n[0], n[2], n[1], n[3]]
+
     for en in elements.tetra10:
         n = elements.tetra10[en]
-        elements.tetra10[en] = [n[0], n[1], n[2], n[3], n[4], n[5], n[6],
-                                n[7], n[9], n[8]]
+        elements.tetra10[en] = [n[0], n[2], n[1], n[3], n[6], n[5], n[4],
+                                n[7], n[8], n[9]]
+        
+    for en in elements.hexa8:
+        n = elements.hexa8[en]
+        elements.hexa8[en] = [n[0], n[3], n[2], n[1], n[4], n[7], n[6],
+                                n[5]]
     for en in elements.hexa20:
         n = elements.hexa20[en]
-        elements.hexa20[en] = [n[0], n[1], n[2], n[3], n[4], n[5], n[6], n[7],
-                               n[8], n[11], n[13], n[9], n[16], n[18], n[19],
-                               n[17],n[10], n[12], n[14], n[15]]
+        elements.hexa20[en] = [n[0], n[3], n[2], n[1], n[4], n[7], n[6], n[5],
+                               n[9], n[13], n[11], n[8], n[17], n[19], n[18],
+                               n[16],n[10], n[15], n[14], n[12]]
     
     for en in elements.penta6:
         
         n = elements.penta6[en]
-        elements.penta6[en] = [n[1], n[0], n[2], n[4], n[3], n[5]]
+        elements.penta6[en] = [n[0], n[2], n[1], n[3], n[5], n[4]]
    
     for en in elements.penta15:
         
         n = elements.penta15[en]
-        elements.penta15[en] = [n[1], n[0], n[2], n[4], n[3], n[5],
-                                n[6], n[7], n[9], n[12], n[13], n[14], n[10],
-                                n[8], n[11]]
+        elements.penta15[en] = [n[0], n[2], n[1], n[3], n[5], n[4],
+                                n[7], n[9], n[6], n[13], n[14], n[12], n[8],
+                                n[11], n[10]]
      
     return {
         "Nodes": nodes,
