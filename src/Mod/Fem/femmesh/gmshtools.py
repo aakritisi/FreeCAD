@@ -675,6 +675,18 @@ class GmshTools():
             Console.PrintMessage("  {}\n".format(self.bl_setting_list))
 
     def write_groups(self, geo):
+        n = 1000
+        solver = None
+        file_ext = None
+        for m in self.analysis.Group:
+            if m.isDerivedFrom("Fem::FemSolverObjectPython"):
+                solver = m
+        if solver:
+            if hasattr(solver, "MeshFormat"):
+                file_ext = solver.MeshFormat
+
+
+        face_mapping = {}
         if self.group_elements:
             # print("  We are going to have to find elements to make mesh groups for.")
             geo.write("// group data\n")
@@ -708,10 +720,26 @@ class GmshTools():
                     curly_br_s = "{"
                     curly_br_e = "}"
                     # explicit use double quotes in geo file
-                    geo.write(
+                    if(physical_type == "Surface"):
+                        geo.write(
+                        'Physical {}("{}", {}) = {}{}{};\n'
+                        .format(physical_type, group, n, curly_br_s, ele_nr, curly_br_e)
+                        )
+                        for ele_face in ele_nr.split(", "):
+                            str_face_mapping = '({}, {});'.format(ele_face, n)
+                            str_face_mapping = face_mapping.get(group, "") + str_face_mapping
+                            face_mapping[group] = str_face_mapping
+                        n = n+1
+                    else:
+                        if(file_ext == ".msh"):
+                            error_message = "Contraints on entities other than faces not supported for .msh mesh file"
+                            Console.PrintError(error_message)
+                            raise GmshError(error_message)
+                        geo.write(
                         'Physical {}("{}") = {}{}{};\n'
                         .format(physical_type, group, curly_br_s, ele_nr, curly_br_e)
-                    )
+                        )
+            self.mesh_obj.FaceMapping = face_mapping
             geo.write("\n")
 
     def write_boundary_layer(self, geo):

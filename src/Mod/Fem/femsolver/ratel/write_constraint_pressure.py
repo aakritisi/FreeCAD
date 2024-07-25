@@ -36,25 +36,41 @@ def get_constraint_title():
 
 def write_constraint(f, femobjs_pressure, ratel_writer):
     
+    str_face_map = [value for key, value in ratel_writer.mesh_object.FaceMapping.items() if key.startswith("ConstraintPressure")]
+    face_map = {}
+
+    for str_val in str_face_map:
+        str_li = str_val.split(");")[:-1]
+        for str_ele in str_li:
+            str_li = str_ele.split(", ")
+            face_map[(str_li[0])[1:]] = str_li[1]
+
+    face_numbers_list = ','.join(list(set(face_map.values()))) 
+    if(len(face_numbers_list) >0):
+        f.write("   pressure: ")
+        f.write(face_numbers_list)
+        f.write("\n")    
     
     for femobj_press in femobjs_pressure:
+        face_set = set()
         pressure_obj = femobj_press["Object"]
         pressure_quantity = FreeCAD.Units.Quantity(pressure_obj.Pressure.getValueAs("Pa"))
         face_numbers = []
         for _, sub_elements in pressure_obj.References:
             for sub_element in sub_elements:
                 if sub_element.startswith("Face"):
-                    face_number = sub_element[4:]
-                    face_numbers.append(face_number)
+                    face_number = sub_element[4:].strip()
+                    face_num = face_map.get(face_number, face_number)
+                    face_numbers.append(face_num)
                 else:
                     FreeCAD.Console.PrintError("Ratel doesn't support constraints on Vertices or Edges \n")
 
         if(len(face_numbers) > 0):
-            f.write("   pressure: ")
-            face_numbers_list = ','.join(face_numbers)
-            f.write(face_numbers_list)
-            f.write("\n")
             for face_number in face_numbers:
-                f.write("   pressure_" + face_number + ": ")
-                f.write(str(pressure_quantity))
-                f.write("\n")
+                if(face_number not in face_set):
+                    f.write("   pressure_" + face_number + ": ")
+                    f.write(str(pressure_quantity))
+                    f.write("\n")
+                    face_set.add(face_number)
+                
+

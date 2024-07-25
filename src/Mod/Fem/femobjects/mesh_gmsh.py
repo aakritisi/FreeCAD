@@ -352,3 +352,13 @@ class MeshGmsh(base_fempythonobject.BaseFemPythonObject):
                 "Generated mesh file path"
             )
             obj.FilePath = ""
+
+        if not hasattr(obj, "FaceMapping"):
+            obj.addProperty(
+                "App::PropertyMap",
+                "FaceMapping",
+                "FEM Gmsh Mesh Params",
+                "Mapping of physical face to elementary entities"
+            )
+            obj.FaceMapping = {}
+
