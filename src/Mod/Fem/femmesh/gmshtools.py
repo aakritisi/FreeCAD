@@ -300,13 +300,32 @@ class GmshTools():
                 .format(self.working_dir)
             )
 
+
+        solver = None
+
+        gmsh_prefs = FreeCAD.ParamGet(
+            "User parameter:BaseApp/Preferences/Mod/Fem/Gmsh"
+        )
+
+        for m in self.analysis.Group:
+            if m.isDerivedFrom("Fem::FemSolverObjectPython"):
+                solver = m
+        if solver:
+            if hasattr(solver, "MeshFormat"):
+                file_ext = solver.MeshFormat
+            else:
+                file_ext = ".unv"
+        else:
+            file_ext = gmsh_prefs.GetString("MeshFileFormat", ".unv")
+            
+
         # file paths
         _geometry_name = self.part_obj.Name + "_Geometry"
         self.mesh_name = self.part_obj.Name + "_Mesh"
         # geometry file
         self.temp_file_geometry = os.path.join(self.working_dir, _geometry_name + ".brep")
         # mesh file
-        self.temp_file_mesh = os.path.join(self.working_dir, self.mesh_name + ".unv")
+        self.temp_file_mesh = os.path.join(self.working_dir, self.mesh_name + file_ext)
         # Gmsh input file
         self.temp_file_geo = os.path.join(self.working_dir, "shape2mesh.geo")
         Console.PrintMessage("  " + self.temp_file_geometry + "\n")
@@ -656,6 +675,18 @@ class GmshTools():
             Console.PrintMessage("  {}\n".format(self.bl_setting_list))
 
     def write_groups(self, geo):
+        n = 1000
+        solver = None
+        file_ext = None
+        for m in self.analysis.Group:
+            if m.isDerivedFrom("Fem::FemSolverObjectPython"):
+                solver = m
+        if solver:
+            if hasattr(solver, "MeshFormat"):
+                file_ext = solver.MeshFormat
+
+
+        face_mapping = {}
         if self.group_elements:
             # print("  We are going to have to find elements to make mesh groups for.")
             geo.write("// group data\n")
@@ -689,10 +720,26 @@ class GmshTools():
                     curly_br_s = "{"
                     curly_br_e = "}"
                     # explicit use double quotes in geo file
-                    geo.write(
+                    if(physical_type == "Surface"):
+                        geo.write(
+                        'Physical {}("{}", {}) = {}{}{};\n'
+                        .format(physical_type, group, n, curly_br_s, ele_nr, curly_br_e)
+                        )
+                        for ele_face in ele_nr.split(", "):
+                            str_face_mapping = '({}, {});'.format(ele_face, n)
+                            str_face_mapping = face_mapping.get(group, "") + str_face_mapping
+                            face_mapping[group] = str_face_mapping
+                        n = n+1
+                    else:
+                        if(file_ext == ".msh"):
+                            error_message = "Contraints on entities other than faces not supported for .msh mesh file"
+                            Console.PrintError(error_message)
+                            raise GmshError(error_message)
+                        geo.write(
                         'Physical {}("{}") = {}{}{};\n'
                         .format(physical_type, group, curly_br_s, ele_nr, curly_br_e)
-                    )
+                        )
+            self.mesh_obj.FaceMapping = face_mapping
             geo.write("\n")
 
     def write_boundary_layer(self, geo):
@@ -971,6 +1018,7 @@ class GmshTools():
         if not self.error:
             fem_mesh = Fem.read(self.temp_file_mesh)
             self.mesh_obj.FemMesh = fem_mesh
+            self.mesh_obj.FilePath = self.temp_file_mesh
             Console.PrintMessage("  New mesh was added to the mesh object.\n")
         else:
             Console.PrintError("No mesh was created.\n")

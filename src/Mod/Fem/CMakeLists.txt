@@ -45,6 +45,7 @@ SET(FemExamples_SRCS
     femexamples/boxanalysis_base.py
     femexamples/boxanalysis_static.py
     femexamples/boxanalysis_frequency.py
+    femexamples/boxanalysis_static_ratel.py
     femexamples/buckling_platebuckling.py
     femexamples/buckling_lateraltorsionalbuckling.py
     femexamples/ccx_buckling_flexuralbuckling.py
@@ -147,6 +148,7 @@ SET(FemInOut_SRCS
     feminout/importCcxFrdResults.py
     feminout/importFenicsMesh.py
     feminout/importInpMesh.py
+    feminout/importMshMesh.py
     feminout/importPyMesh.py
     feminout/importToolsFem.py
     feminout/importVTKResults.py
@@ -249,6 +251,16 @@ SET(FemSolverCalculix_SRCS
     femsolver/calculix/writer.py
 )
 
+SET(FemSolverRatel_SRCS
+    femsolver/ratel/__init__.py
+    femsolver/ratel/solver.py
+    femsolver/ratel/write_constraint_clamp.py
+    femsolver/ratel/writer.py
+    femsolver/ratel/tasks.py
+    femsolver/ratel/write_constraint_traction.py
+    femsolver/ratel/write_constraint_pressure.py
+)
+
 SET(FemSolverElmer_SRCS
     femsolver/elmer/__init__.py
     femsolver/elmer/sifio.py
@@ -323,6 +335,7 @@ SET(FemTestsApp_SRCS
     femtest/app/test_mesh.py
     femtest/app/test_object.py
     femtest/app/test_open.py
+    femtest/app/test_ratel.py
     femtest/app/test_result.py
     femtest/app/test_solver_elmer.py
     femtest/app/test_solver_mystran.py
@@ -399,6 +412,8 @@ SET(FemTestsMesh_SRCS
     femtest/data/mesh/tetra10_mesh.vtk
     femtest/data/mesh/tetra10_mesh.yml
     femtest/data/mesh/tetra10_mesh.z88
+    femtest/data/mesh/tetra10_mesh.msh
+    femtest/data/mesh/beam_mesh.msh
 )
 
 SET(FemTestsMystran_SRCS
@@ -409,6 +424,11 @@ SET(FemTestsMystran_SRCS
     femtest/data/mystran/ccx_cantilever_faceload.bdf
     femtest/data/mystran/ccx_cantilever_nodeload.bdf
     femtest/data/mystran/mystran_plate.bdf
+)
+
+SET(FemTestsRatel_SRCS
+    femtest/data/ratel/__init__.py
+    femtest/data/ratel/box_static.yml
 )
 
 SET(FemTestsOpen_SRCS
@@ -492,6 +512,7 @@ SET(FemAllScripts
     ${FemResult_SRCS}
     ${FemSolver_SRCS}
     ${FemSolverCalculix_SRCS}
+    ${FemSolverRatel_SRCS}
     ${FemSolverElmer_SRCS}
     ${FemSolverElmerEquations_SRCS}
     ${FemSolverFenics_SRCS}
@@ -504,6 +525,7 @@ SET(FemAllScripts
     ${FemTestsElmer_SRCS}
     ${FemTestsMesh_SRCS}
     ${FemTestsMystran_SRCS}
+    ${FemTestsRatel_SRCS}
     ${FemTestsOpen_SRCS}
     ${FemTestsZ88Main_SRCS}
     ${FemTestsZ88Ccxcantifl_SRCS}
@@ -531,6 +553,7 @@ INSTALL(FILES ${FemObjects_SRCS} DESTINATION Mod/Fem/femobjects)
 INSTALL(FILES ${FemResult_SRCS} DESTINATION Mod/Fem/femresult)
 INSTALL(FILES ${FemSolver_SRCS} DESTINATION Mod/Fem/femsolver)
 INSTALL(FILES ${FemSolverCalculix_SRCS} DESTINATION Mod/Fem/femsolver/calculix)
+INSTALL(FILES ${FemSolverRatel_SRCS} DESTINATION Mod/Fem/femsolver/ratel)
 INSTALL(FILES ${FemSolverElmer_SRCS} DESTINATION Mod/Fem/femsolver/elmer)
 INSTALL(FILES ${FemSolverElmerEquations_SRCS} DESTINATION Mod/Fem/femsolver/elmer/equations)
 INSTALL(FILES ${FemSolverFenics_SRCS} DESTINATION Mod/Fem/femsolver/fenics)
@@ -543,6 +566,7 @@ INSTALL(FILES ${FemTestsCcx_SRCS} DESTINATION Mod/Fem/femtest/data/calculix)
 INSTALL(FILES ${FemTestsElmer_SRCS} DESTINATION Mod/Fem/femtest/data/elmer)
 INSTALL(FILES ${FemTestsMesh_SRCS} DESTINATION Mod/Fem/femtest/data/mesh)
 INSTALL(FILES ${FemTestsMystran_SRCS} DESTINATION Mod/Fem/femtest/data/mystran)
+INSTALL(FILES ${FemTestsRatel_SRCS} DESTINATION Mod/Fem/femtest/data/ratel)
 INSTALL(FILES ${FemTestsOpen_SRCS} DESTINATION Mod/Fem/femtest/data/open)
 INSTALL(FILES ${FemTestsZ88Main_SRCS} DESTINATION Mod/Fem/femtest/data/z88)
 INSTALL(FILES ${FemTestsZ88CcxcantiEleHex20_SRCS} DESTINATION Mod/Fem/femtest/data/z88/ccx_cantilever_ele_hexa20)

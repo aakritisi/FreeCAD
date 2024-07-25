@@ -947,6 +947,16 @@ def makeSolverZ88(
     obj = femsolver.z88.solver.create(doc, name)
     return obj
 
+def makeSolverRatel(
+    doc,
+    name="SolverRatel"
+):
+    """makeSolverRatel(document, [name]):
+    makes a Ratel solver object"""
+    import femsolver.ratel.solver
+    obj = femsolver.ratel.solver.create(doc, name)
+    return obj
+
 
 """
 # get the supportedTypes
