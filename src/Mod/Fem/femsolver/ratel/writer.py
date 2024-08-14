@@ -41,6 +41,7 @@ from . import write_constraint_clamp as con_clamp
 from . import write_constraint_traction as con_traction
 from . import write_constraint_pressure as con_pressure
 from .. import writerbase
+from . import write_femelement_material
 from . import solver
 from femtools import constants
 
@@ -100,6 +101,7 @@ class FemInputWriterRatel(writerbase.FemInputWriter):
         self.write_constraints_propdata_clamp(inpfile, self.member.cons_fixed, self.member.cons_displacement, con_clamp)
         self.write_constraints_propdata(inpfile, self.member.cons_force, con_traction)
         self.write_constraints_propdata(inpfile, self.member.cons_pressure, con_pressure)
+        write_femelement_material.write_femelement_material(inpfile, self)
        
         inpfile.close()
 
