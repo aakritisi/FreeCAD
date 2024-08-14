@@ -92,6 +92,11 @@ SET(FemExamples_SRCS
     femexamples/material_multiple_bendingbeam_fivefaces.py
     femexamples/material_multiple_tensionrod_twoboxes.py
     femexamples/material_nl_platewithhole.py
+    femexamples/neo_hookean_ratel_material.py
+    femexamples/mooney_rivlin_ratel_material.py
+    femexamples/ogden_ratel_material.py
+    femexamples/linear_plasticity_ratel_material.py
+    femexamples/fracture_modeling_ratel_material.py
     femexamples/mystran_plate.py
     femexamples/rc_wall_2d.py
     femexamples/square_pipe_end_twisted_edgeforces.py
@@ -259,6 +264,7 @@ SET(FemSolverRatel_SRCS
     femsolver/ratel/tasks.py
     femsolver/ratel/write_constraint_traction.py
     femsolver/ratel/write_constraint_pressure.py
+    femsolver/ratel/write_femelement_material.py
 )
 
 SET(FemSolverElmer_SRCS
@@ -429,6 +435,11 @@ SET(FemTestsMystran_SRCS
 SET(FemTestsRatel_SRCS
     femtest/data/ratel/__init__.py
     femtest/data/ratel/box_static.yml
+    femtest/data/ratel/material_neo_hookean.yml
+    femtest/data/ratel/material_mooney_rivlin.yml
+    femtest/data/ratel/material_ogden.yml
+    femtest/data/ratel/material_linear_plasticity.yml
+    femtest/data/ratel/material_fracture_modeling.yml
 )
 
 SET(FemTestsOpen_SRCS
