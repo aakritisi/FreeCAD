@@ -61,6 +61,7 @@ def write_constraint(f, femobjs_pressure, ratel_writer):
                     face_numbers.append(face_num)
                 else:
                     FreeCAD.Console.PrintError("Ratel doesn't support constraints on Vertices or Edges \n")
+                    ratel_writer.femelement_count_test = False
 
 
     if not face_map:
