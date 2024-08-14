@@ -101,6 +101,7 @@ class FemInputWriterRatel(writerbase.FemInputWriter):
         self.write_constraints_propdata_clamp(inpfile, self.member.cons_fixed, self.member.cons_displacement, con_clamp)
         self.write_constraints_propdata(inpfile, self.member.cons_force, con_traction)
         self.write_constraints_propdata(inpfile, self.member.cons_pressure, con_pressure)
+        inpfile.write("\n")
         write_femelement_material.write_femelement_material(inpfile, self)
        
         inpfile.close()

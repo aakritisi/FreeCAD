@@ -42,7 +42,9 @@ def write_femelement_material(f, ratel_writer):
             )
             ratel_writer.femelement_count_test = False
             return
-        
+        f.write("model: ")
+        f.write(mat_obj.Material["Model"])
+        f.write("\n")
         model_li = mat_obj.Material["Model"].split("-")
         model = ""
 
