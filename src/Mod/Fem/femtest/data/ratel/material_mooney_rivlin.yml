@@ -2,8 +2,12 @@ dm_plex_filename:
 
 bc:
 
-model: elasticity-mooney-rivlin-initial
-mu_1: 0.5
-mu_2: 0.5
-E: 3200000.0
-nu: 0.4
+material: Concrete-Generic
+
+Concrete-Generic:
+   model: elasticity-mooney-rivlin-initial
+   mu_1: 0.5
+   mu_2: 0.5
+   E: 3200000.0
+   nu: 0.4
+

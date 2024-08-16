@@ -30,38 +30,40 @@ import FreeCAD
 
 def write_femelement_material(f, ratel_writer):
 
+    mat_names = []
+
     for femobj in ratel_writer.member.mats_linear:
-        # femobj --> dict, FreeCAD document object is femobj["Object"]
 
         mat_obj = femobj["Object"]
+        mat_name = mat_obj.Material["Name"]
+        mat_names.append(mat_name)
         
+    if mat_names:
+        mat_names_comined =  ','.join(mat_names)
+        f.write("material: ")
+        f.write(mat_names_comined)
+        f.write("\n\n")
 
+    for femobj in ratel_writer.member.mats_linear:
+        # femobj --> dict, FreeCAD document object is femobj["Object"]
+        mat_obj = femobj["Object"]
+
+        mat_name = mat_obj.Material["Name"]
+        f.write(mat_name)
+        f.write(":")
+        f.write("\n")
+        mat_obj = femobj["Object"]
+        
         if "Model" not in  mat_obj.Material:
             FreeCAD.Console.PrintError(
                 "Model name required for material "
             )
             ratel_writer.femelement_count_test = False
             return
-        f.write("model: ")
+        
+        f.write("   model: ")
         f.write(mat_obj.Material["Model"])
         f.write("\n")
-        model_li = mat_obj.Material["Model"].split("-")
-        model = ""
-
-        if "ogden" in model_li:
-            model = "ogden"
-        elif "hookean" in model_li:
-            model = "neo-hookean"
-        elif "rivlin" in model_li:
-            model = "mooney-rivlin"
-        elif "plasticity" in model_li:
-            model = "linear-plasticity"
-        else:
-            model = "elasticity"
-
-        print(
-                model
-            )
         
         YM = FreeCAD.Units.Quantity(mat_obj.Material["YoungsModulus"])
         YM_in_Pa = YM.getValueAs("Pa").Value
@@ -71,7 +73,7 @@ def write_femelement_material(f, ratel_writer):
         if "mu_1" in mat_obj.Material:
             mu_1 = FreeCAD.Units.Quantity(mat_obj.Material["mu_1"])
             if mu_1 >0:
-                f.write("mu_1: ")
+                f.write("   mu_1: ")
                 f.write(str(mu_1))
                 f.write("\n")
             else:
@@ -85,7 +87,7 @@ def write_femelement_material(f, ratel_writer):
         if "mu_2" in mat_obj.Material:
             mu_2 = FreeCAD.Units.Quantity(mat_obj.Material["mu_2"])
             if mu_2 >0:
-                f.write("mu_2: ")
+                f.write("   mu_2: ")
                 f.write(str(mu_2))
                 f.write("\n")
             else:
@@ -99,13 +101,13 @@ def write_femelement_material(f, ratel_writer):
         
         if "alpha" in mat_obj.Material:
             alpha = mat_obj.Material["alpha"]
-            f.write("alpha: ")
+            f.write("   alpha: ")
             f.write(str(alpha))
             f.write("\n")
         
         if "m" in mat_obj.Material:
             m = mat_obj.Material["m"]
-            f.write("m: ")
+            f.write("   m: ")
             f.write(str(m))
             f.write("\n")
         
@@ -115,7 +117,7 @@ def write_femelement_material(f, ratel_writer):
         if "yield_stress" in mat_obj.Material:
             yield_stress = FreeCAD.Units.Quantity(mat_obj.Material["yield_stress"])
             if yield_stress >0:
-                f.write("yield_stress: ")
+                f.write("   yield_stress: ")
                 f.write(str(yield_stress))
                 f.write("\n")
             else:
@@ -129,7 +131,7 @@ def write_femelement_material(f, ratel_writer):
         if "hardening_A" in mat_obj.Material:
             hardening_A = FreeCAD.Units.Quantity(mat_obj.Material["hardening_A"])
             if hardening_A >0:
-                f.write("hardening_A: ")
+                f.write("   hardening_A: ")
                 f.write(str(hardening_A))
                 f.write("\n")
             else:
@@ -142,19 +144,19 @@ def write_femelement_material(f, ratel_writer):
     
         if "use_AT1" in mat_obj.Material:
             use_AT1 = mat_obj.Material["use_AT1"]
-            f.write("use_AT1: ")
+            f.write("   use_AT1: ")
             f.write(str(use_AT1))
             f.write("\n")
 
         if "use_hybrid" in mat_obj.Material:
             use_hybrid = mat_obj.Material["use_hybrid"]
-            f.write("use_hybrid: ")
+            f.write("   use_hybrid: ")
             f.write(str(use_hybrid))
             f.write("\n")
 
         if "use_offdiagonal" in mat_obj.Material:
             use_offdiagonal = mat_obj.Material["use_offdiagonal"]
-            f.write("use_offdiagonal: ")
+            f.write("   use_offdiagonal: ")
             f.write(str(use_offdiagonal))
             f.write("\n")
 
@@ -163,7 +165,7 @@ def write_femelement_material(f, ratel_writer):
         if "fracture_toughness" in mat_obj.Material:
             fracture_toughness = FreeCAD.Units.Quantity(mat_obj.Material["fracture_toughness"])
             if fracture_toughness >0:
-                f.write("fracture_toughness: ")
+                f.write("   fracture_toughness: ")
                 f.write(str(fracture_toughness))
                 f.write("\n")
             else:
@@ -177,7 +179,7 @@ def write_femelement_material(f, ratel_writer):
         if "characteristic_length" in mat_obj.Material:
             characteristic_length = FreeCAD.Units.Quantity(mat_obj.Material["characteristic_length"])
             if characteristic_length >0:
-                f.write("characteristic_length: ")
+                f.write("   characteristic_length: ")
                 f.write(str(characteristic_length))
                 f.write("\n")
             else:
@@ -192,7 +194,7 @@ def write_femelement_material(f, ratel_writer):
         if "residual_stiffness" in mat_obj.Material:
             residual_stiffness = FreeCAD.Units.Quantity(mat_obj.Material["residual_stiffness"])
             if residual_stiffness >0:
-                f.write("residual_stiffness: ")
+                f.write("   residual_stiffness: ")
                 f.write(str(residual_stiffness))
                 f.write("\n")
             else:
@@ -206,7 +208,7 @@ def write_femelement_material(f, ratel_writer):
         if "damage_viscosity" in mat_obj.Material:
             damage_viscosity = FreeCAD.Units.Quantity(mat_obj.Material["damage_viscosity"])
             if damage_viscosity >0:
-                f.write("damage_viscosity: ")
+                f.write("   damage_viscosity: ")
                 f.write(str(damage_viscosity))
                 f.write("\n")
             else:
@@ -218,7 +220,7 @@ def write_femelement_material(f, ratel_writer):
         
 
         if YM_in_Pa > 0:
-            f.write("E: ")
+            f.write("   E: ")
             f.write(str(YM_in_Pa))
             f.write("\n")
         else:
@@ -230,7 +232,7 @@ def write_femelement_material(f, ratel_writer):
 
 
         if PR < 0.5:
-            f.write("nu: ")
+            f.write("   nu: ")
             f.write(str(PR))
             f.write("\n")
         else:
@@ -240,4 +242,5 @@ def write_femelement_material(f, ratel_writer):
             ratel_writer.femelement_count_test = False
             return
         
+        f.write("\n")
         

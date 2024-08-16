@@ -2,6 +2,10 @@ dm_plex_filename:
 
 bc:
 
-model: elasticity-isochoric-neo-hookean-initial
-E: 3200000.0
-nu: 0.4
+material: Concrete-Generic
+
+Concrete-Generic:
+   model: elasticity-isochoric-neo-hookean-initial
+   E: 3200000.0
+   nu: 0.4
+

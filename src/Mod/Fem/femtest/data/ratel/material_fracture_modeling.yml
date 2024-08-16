@@ -2,14 +2,18 @@ dm_plex_filename:
 
 bc:
 
-model: elasticity-linear-damage
-yield_stress: 0.1
-hardening_A: 0.1
-use_AT1: true
-use_offdiagonal: true
-fracture_toughness: 1.0
-characteristic_length: 0.3
-residual_stiffness: 1e-06
-damage_viscosity: 1.0
-E: 3200000.0
-nu: 0.4
+material: Concrete-Generic
+
+Concrete-Generic:
+   model: elasticity-linear-damage
+   yield_stress: 0.1
+   hardening_A: 0.1
+   use_AT1: true
+   use_offdiagonal: true
+   fracture_toughness: 1.0
+   characteristic_length: 0.3
+   residual_stiffness: 1e-06
+   damage_viscosity: 1.0
+   E: 3200000.0
+   nu: 0.4
+
