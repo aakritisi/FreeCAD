@@ -80,12 +80,7 @@ def write_femelement_material(f, ratel_writer):
                 )
                 ratel_writer.femelement_count_test = False
                 return 
-        elif model == "mooney-rivlin":
-            FreeCAD.Console.PrintError(
-                    "mu_1 value value missing for material "
-                )
-            ratel_writer.femelement_count_test = False
-            return 
+    
             
         if "mu_2" in mat_obj.Material:
             mu_2 = FreeCAD.Units.Quantity(mat_obj.Material["mu_2"])
@@ -99,14 +94,7 @@ def write_femelement_material(f, ratel_writer):
                 )
                 ratel_writer.femelement_count_test = False
                 return 
-        elif model == "mooney-rivlin":
-            FreeCAD.Console.PrintError(
-                    "mu_2 value missing for material "
-                )
-            ratel_writer.femelement_count_test = False
-            return 
             
-        
         
         
         if "alpha" in mat_obj.Material:
@@ -114,24 +102,13 @@ def write_femelement_material(f, ratel_writer):
             f.write("alpha: ")
             f.write(str(alpha))
             f.write("\n")
-        elif model == "ogden":
-            FreeCAD.Console.PrintError(
-                    "alpha values missing for material "
-                )
-            ratel_writer.femelement_count_test = False
-            return 
         
         if "m" in mat_obj.Material:
             m = mat_obj.Material["m"]
             f.write("m: ")
             f.write(str(m))
             f.write("\n")
-        elif model == "ogden":
-            FreeCAD.Console.PrintError(
-                    "m ogden material constant values missing for material "
-                )
-            ratel_writer.femelement_count_test = False
-            return
+        
 
         
         
@@ -147,12 +124,7 @@ def write_femelement_material(f, ratel_writer):
                 )
                 ratel_writer.femelement_count_test = False
                 return
-        elif model == "linear-plasticity":
-            FreeCAD.Console.PrintError(
-                    "yield_stress value missing for material "
-                )
-            ratel_writer.femelement_count_test = False
-            return 
+        
             
         if "hardening_A" in mat_obj.Material:
             hardening_A = FreeCAD.Units.Quantity(mat_obj.Material["hardening_A"])
@@ -166,13 +138,7 @@ def write_femelement_material(f, ratel_writer):
                 )
                 ratel_writer.femelement_count_test = False
                 return
-        elif model == "linear-plasticity":
-            FreeCAD.Console.PrintError(
-                    "hardening_A value missing for material "
-                )
-            ratel_writer.femelement_count_test = False
-            return
-
+        
     
         if "use_AT1" in mat_obj.Material:
             use_AT1 = mat_obj.Material["use_AT1"]
@@ -206,12 +172,7 @@ def write_femelement_material(f, ratel_writer):
                 )
                 ratel_writer.femelement_count_test = False
                 return
-        elif model == "elasticity":
-            FreeCAD.Console.PrintError(
-                    "fracture_toughness value missing for material "
-                )
-            ratel_writer.femelement_count_test = False
-            return 
+       
         
         if "characteristic_length" in mat_obj.Material:
             characteristic_length = FreeCAD.Units.Quantity(mat_obj.Material["characteristic_length"])
@@ -226,12 +187,7 @@ def write_femelement_material(f, ratel_writer):
                 ratel_writer.femelement_count_test = False
                 return
             
-        elif model == "elasticity":
-            FreeCAD.Console.PrintError(
-                    "Characteristic_length value missing for material "
-                )
-            ratel_writer.femelement_count_test = False
-            return 
+        
         
         if "residual_stiffness" in mat_obj.Material:
             residual_stiffness = FreeCAD.Units.Quantity(mat_obj.Material["residual_stiffness"])
@@ -245,12 +201,7 @@ def write_femelement_material(f, ratel_writer):
                 )
                 ratel_writer.femelement_count_test = False
                 return
-        elif model == "elasticity":
-            FreeCAD.Console.PrintError(
-                    "residual_stiffness value missing for material "
-                )
-            ratel_writer.femelement_count_test = False
-            return 
+       
         
         if "damage_viscosity" in mat_obj.Material:
             damage_viscosity = FreeCAD.Units.Quantity(mat_obj.Material["damage_viscosity"])
@@ -264,12 +215,7 @@ def write_femelement_material(f, ratel_writer):
                 )
                 ratel_writer.femelement_count_test = False
                 return
-        elif model == "elasticity":
-            FreeCAD.Console.PrintError(
-                    "damage_viscosity value missing for material "
-                )
-            ratel_writer.femelement_count_test = False
-            return 
+        
 
         if YM_in_Pa > 0:
             f.write("E: ")
@@ -282,7 +228,6 @@ def write_femelement_material(f, ratel_writer):
             ratel_writer.femelement_count_test = False
             return
 
-        
 
         if PR < 0.5:
             f.write("nu: ")
