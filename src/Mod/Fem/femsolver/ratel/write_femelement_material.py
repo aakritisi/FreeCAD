@@ -1,5 +1,5 @@
 # ***************************************************************************
-# *   Copyright (c) 2021 Bernd Hahnebach <bernd@bimstatik.org>              *
+# *   Copyright (c) 2024 Aakriti Singh <aakritisi1997@gmail.com>            *
 # *                                                                         *
 # *   This file is part of the FreeCAD CAx development system.              *
 # *                                                                         *

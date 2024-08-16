@@ -1,4 +1,5 @@
 # ***************************************************************************
+# *   Copyright (c) 2024 Aakriti Singh <aakritisi1997@gmail.com>            *
 # *   Copyright (c) 2020 Sudhanshu Dubey <sudhanshu.thethunder@gmail.com>   *
 # *   Copyright (c) 2021 Bernd Hahnebach <bernd@bimstatik.org>              *
 # *                                                                         *
