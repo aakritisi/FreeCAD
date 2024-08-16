@@ -135,7 +135,6 @@ def setup(doc=None, solvertype="ratel"):
     mat["Model"] = "elasticity-mooney-rivlin-initial"
     mat["YoungsModulus"] = "3.2 MPa"
     mat["PoissonRatio"] = "0.4"
-    mat["nu_smoother"] = "0.39"
     mat["mu_1"] = "0.5"
     mat["mu_2"] = "0.5"
     material_obj.Material = mat

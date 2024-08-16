@@ -135,7 +135,6 @@ def setup(doc=None, solvertype="ratel"):
     mat["Model"] = "elasticity-isochoric-neo-hookean-initial"
     mat["YoungsModulus"] = "3.2 MPa"
     mat["PoissonRatio"] = "0.4"
-    mat["nu_smoother"] = "0.39"
     material_obj.Material = mat
     analysis.addObject(material_obj)
 

@@ -3,7 +3,6 @@ dm_plex_filename:
 bc:
 
 model: elasticity-linear-damage
-nu_smoother: 0.39
 yield_stress: 0.1
 hardening_A: 0.1
 use_AT1: true

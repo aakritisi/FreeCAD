@@ -66,29 +66,7 @@ def write_femelement_material(f, ratel_writer):
         YM = FreeCAD.Units.Quantity(mat_obj.Material["YoungsModulus"])
         YM_in_Pa = YM.getValueAs("Pa").Value
         PR = float(mat_obj.Material["PoissonRatio"])
-       
-        
-        if "nu_smoother" in mat_obj.Material:
-            nu_smoother = FreeCAD.Units.Quantity(mat_obj.Material["nu_smoother"])
-            if nu_smoother < 0.5:
-                f.write("nu_smoother: ")
-                f.write(str(nu_smoother))
-                f.write("\n")
-            else:
-                FreeCAD.Console.PrintError(
-                    "nu_smoother value should be < 0.5 "
-                )
-                ratel_writer.femelement_count_test = False
-                return 
-        elif model == "neo-hookean" or model == "mooney-rivlin" or model == "ogden":
-                FreeCAD.Console.PrintError(
-                "nu_smoother value missing for material "
-            )
-                ratel_writer.femelement_count_test = False
-                return
-        
-       
-        
+               
         
         if "mu_1" in mat_obj.Material:
             mu_1 = FreeCAD.Units.Quantity(mat_obj.Material["mu_1"])

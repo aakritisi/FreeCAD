@@ -135,7 +135,6 @@ def setup(doc=None, solvertype="ratel"):
     mat["Model"] = "elasticity-linear-damage"
     mat["YoungsModulus"] = "3.2 MPa"
     mat["PoissonRatio"] = "0.4"
-    mat["nu_smoother"] = "0.39"
     mat["PoissonRatio"] = "0.4"
     mat["yield_stress"] = "0.1"
     mat["hardening_A"] = "0.1"

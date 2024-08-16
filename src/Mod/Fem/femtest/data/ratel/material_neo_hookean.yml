@@ -3,6 +3,5 @@ dm_plex_filename:
 bc:
 
 model: elasticity-isochoric-neo-hookean-initial
-nu_smoother: 0.39
 E: 3200000.0
 nu: 0.4
