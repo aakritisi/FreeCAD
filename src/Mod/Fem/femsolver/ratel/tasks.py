@@ -32,8 +32,9 @@ import os
 import os.path
 import subprocess
 
+from . import ratel_util
 import FreeCAD
-
+import codecs
 from . import writer
 from .. import run
 from .. import settings
@@ -80,31 +81,73 @@ class Prepare(run.Prepare):
             self.fail()
         _inputFileName = os.path.splitext(os.path.basename(path))[0]
         
+        
 
 class Solve(run.Solve):
 
     def run(self):
-        # self.pushStatus("Executing solver...\n")
-
-        # # get solver binary
-        # self.pushStatus("Get solver binary...\n")
-        # binary = settings.get_binary("Ratel")
-        # if binary is None:
-        #     self.pushStatus("Error: The Ratel binary has not been found!")
-        #     self.fail()
-        #     return
-
-        # # run solver
-        # self._process = subprocess.Popen(
-        #     [binary, "-i", _inputFileName],
-        #     cwd=self.directory,
-        #     stdout=subprocess.PIPE,
-        #     stderr=subprocess.PIPE
-        # )
-        # self.signalAbort.add(self._process.terminate)
+        self.pushStatus("Executing solver...\n")
         
-        # self._process.communicate()
-        # self.signalAbort.remove(self._process.terminate)
+        ratel_path, errors = ratel_util.get_location("ratel")
+        lib_ceed_path, errors = ratel_util.get_location("libCEED")
+        petsc_path, errors = ratel_util.get_location("petsc")
+
+        # get solver binary
+        env = os.environ.copy()
+        env['CEED_DIR'] = lib_ceed_path
+        env['PETSC_DIR'] = petsc_path
+        env['PETSC_ARCH'] = 'arch-linux-c-debug'
+
+        
+        # Path to Ratel binary
+        ratel_binary_path = ratel_path + '/bin/ratel-quasistatic'
+        input_file = os.path.join(
+            self.directory, "Input" + ".yml")
+        
+        FreeCAD.Console.PrintMessage("rrtt")
+        FreeCAD.Console.PrintMessage(input_file)
+        # Command and arguments
+        command = [
+            ratel_binary_path,
+            '-options_file',
+            input_file
+        ]
+        output_file_name = os.path.join(self.directory, "ratel_output.yml")
+        output_file = codecs.open(output_file_name, "w", encoding="utf-8")
+        
+        # run solver
+        self._process = subprocess.Popen(
+        command,
+        env=env,
+        cwd=self.directory,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        universal_newlines=True
+        )
+        self.signalAbort.add(self._process.terminate)
+        while True:
+            output = self._process.stdout.readline()
+            if output == '' and self._process.poll() is not None:
+                break
+            if output:
+                output_file.write(output.strip())
+                output_file.write("\n")
+                self.pushStatus(output.strip())
+        
+        stdout, stderr = self._process.communicate()
+        if stdout:
+            output_file.write(stdout)
+            self.pushStatus(stdout)
+        if stderr:
+            print(stderr)
+            self.pushStatus(stderr)
+        output_file.close()
+    
+        FreeCAD.Console.PrintMessage(
+            "Output file:{}\n"
+            .format(output_file_name)
+        )
+
         return
        
 
