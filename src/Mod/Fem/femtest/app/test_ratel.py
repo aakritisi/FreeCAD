@@ -88,6 +88,52 @@ class TestRatel(unittest.TestCase):
             test_end=True,
         )
 
+    def test_material_neo_hookean(self):
+        from femexamples.neo_hookean_ratel_material import setup
+        
+        setup(self.document, "ratel")
+
+        base_name = get_namefromdef("test_")
+        analysis_dir = testtools.get_fem_test_tmp_dir(self.pre_dir_name + base_name)
+        self.input_file_writing_test(base_name, analysis_dir, test_end=True)
+
+    def test_material_mooney_rivlin(self):
+        from femexamples.mooney_rivlin_ratel_material import setup
+        
+        setup(self.document, "ratel")
+
+        base_name = get_namefromdef("test_")
+        analysis_dir = testtools.get_fem_test_tmp_dir(self.pre_dir_name + base_name)
+        self.input_file_writing_test(base_name, analysis_dir, test_end=True)
+
+    def test_material_ogden(self):
+        from femexamples.ogden_ratel_material import setup
+        
+        setup(self.document, "ratel")
+
+        base_name = get_namefromdef("test_")
+        analysis_dir = testtools.get_fem_test_tmp_dir(self.pre_dir_name + base_name)
+        self.input_file_writing_test(base_name, analysis_dir, test_end=True)
+
+    def test_material_linear_plasticity(self):
+        from femexamples.linear_plasticity_ratel_material import setup
+        
+        setup(self.document, "ratel")
+
+        base_name = get_namefromdef("test_")
+        analysis_dir = testtools.get_fem_test_tmp_dir(self.pre_dir_name + base_name)
+        self.input_file_writing_test(base_name, analysis_dir, test_end=True)
+
+    def test_material_fracture_modeling(self):
+        from femexamples.fracture_modeling_ratel_material import setup
+        
+        setup(self.document, "ratel")
+
+        base_name = get_namefromdef("test_")
+        analysis_dir = testtools.get_fem_test_tmp_dir(self.pre_dir_name + base_name)
+        self.input_file_writing_test(base_name, analysis_dir, test_end=True)
+
+
     def input_file_writing_test(
         self,
         base_name,
@@ -102,7 +148,6 @@ class TestRatel(unittest.TestCase):
 
         if analysis_dir is None:
             analysis_dir = testtools.get_fem_test_tmp_dir(self.pre_dir_name + base_name)
-        analysis = self.document.Analysis
         machine_ratel = self.document.SolverRatel.Proxy.createMachine(
             self.document.SolverRatel,
             analysis_dir,
@@ -119,5 +164,5 @@ class TestRatel(unittest.TestCase):
         self.assertFalse(error, "Writing failed")
 
         fcc_print("Comparing {} to {}".format(inpfile_given, inpfile_totest))
-        ret = testtools.compare_inp_files(inpfile_given, inpfile_totest)
+        ret = testtools.compare_files(inpfile_given, inpfile_totest)
         self.assertFalse(ret, "ratel writing input test failed.\n{}".format(ret))
