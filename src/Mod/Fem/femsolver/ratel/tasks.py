@@ -87,25 +87,22 @@ class Solve(run.Solve):
 
     def run(self):
         self.pushStatus("Executing solver...\n")
-        
-        ratel_path, errors = ratel_util.get_location("ratel")
-        lib_ceed_path, errors = ratel_util.get_location("libCEED")
-        petsc_path, errors = ratel_util.get_location("petsc")
 
-        # get solver binary
-        env = os.environ.copy()
-        env['CEED_DIR'] = lib_ceed_path
-        env['PETSC_DIR'] = petsc_path
-        env['PETSC_ARCH'] = 'arch-linux-c-debug'
-
+        ratel_path = FreeCAD.ParamGet(
+                    "User parameter:BaseApp/Preferences/Mod/Fem/Ratel"
+                ).GetString("ratelBinaryPath", "").rstrip("/")
         
+        if not ratel_path:
+            FreeCAD.Console.PrintError(
+                "Please set Ratel binary path in preference and try again"
+            )
+            return
+    
         # Path to Ratel binary
         ratel_binary_path = ratel_path + '/bin/ratel-quasistatic'
         input_file = os.path.join(
             self.directory, "Input" + ".yml")
         
-        FreeCAD.Console.PrintMessage("rrtt")
-        FreeCAD.Console.PrintMessage(input_file)
         # Command and arguments
         command = [
             ratel_binary_path,
@@ -118,7 +115,6 @@ class Solve(run.Solve):
         # run solver
         self._process = subprocess.Popen(
         command,
-        env=env,
         cwd=self.directory,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
