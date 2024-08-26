@@ -56,6 +56,7 @@ set(FemGui_UIC_SRCS
     DlgSettingsFemExportAbaqus.ui
     DlgSettingsFemGeneral.ui
     DlgSettingsFemGmsh.ui
+    DlgSettingsFemRatel.ui
     DlgSettingsFemInOutVtk.ui
     DlgSettingsFemMystran.ui
     DlgSettingsFemZ88.ui
@@ -117,6 +118,9 @@ SET(FemGui_DLG_SRCS
     DlgSettingsFemGmsh.ui
     DlgSettingsFemGmshImp.cpp
     DlgSettingsFemGmshImp.h
+    DlgSettingsFemRatel.ui
+    DlgSettingsFemRatelImp.cpp
+    DlgSettingsFemRatelImp.h
     DlgSettingsFemInOutVtk.ui
     DlgSettingsFemInOutVtkImp.cpp
     DlgSettingsFemInOutVtkImp.h
