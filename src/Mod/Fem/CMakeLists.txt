@@ -265,7 +265,6 @@ SET(FemSolverRatel_SRCS
     femsolver/ratel/write_constraint_traction.py
     femsolver/ratel/write_constraint_pressure.py
     femsolver/ratel/write_femelement_material.py
-    femsolver/ratel/ratel_util.py
 )
 
 SET(FemSolverElmer_SRCS
