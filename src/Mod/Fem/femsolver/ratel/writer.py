@@ -65,7 +65,7 @@ class FemInputWriterRatel(writerbase.FemInputWriter):
             mat_geo_sets
         )
         self.mesh_name = self.mesh_object.Name
-        self.file_name = join(self.dir_name, self.mesh_name + ".yml")
+        self.file_name = join(self.dir_name, "Input" + ".yml")
 
     # ********************************************************************************************
     # write Ratel input
